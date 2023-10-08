@@ -11,6 +11,7 @@ public class Cadeteria
     private List<Pedido> listadoPedidos;
     private static Cadeteria instance;
     private AccesoADatosPedidos accesoPedidos = new AccesoADatosPedidos();
+    private AccesoADatosCadetes accesoCadetes;
 
     //Propiedades
     public string? Nombre { get => nombre; set => nombre = value; }
@@ -25,8 +26,8 @@ public class Cadeteria
         {
             AccesoADatosCadeteria helpCadeteria = new AccesoADatosCadeteria();
             instance = helpCadeteria.Obtener();
-            AccesoADatosCadetes helpCadetes = new AccesoADatosCadetes();
-            instance.ListadoCadetes = helpCadetes.Obtener();
+            instance.accesoCadetes = new AccesoADatosCadetes();
+            instance.ListadoCadetes = instance.accesoCadetes.Obtener();
         }
 
         return instance;
@@ -167,29 +168,45 @@ public class Cadeteria
 
     public Pedido BuscarPedido(int idP)
     {
+        listadoPedidos = accesoPedidos.Obtener();
         Pedido? pedidoBuscado = listadoPedidos.FirstOrDefault(p => p.Nro == idP);
-        return pedidoBuscado;
+        if (pedidoBuscado != null)
+        {
+            return pedidoBuscado;
+        } else
+        {
+            return null;
+        }
     }
 
-    /*public void MostrarInforme()
+    public Cadete GetCadete(int idCadete)
     {
-        Console.WriteLine($"=========== Informe de {Nombre} ===============");
-        Console.WriteLine($"Número de cadetes: {ListadoCadetes.Count()}");
+        Cadete? cadeteBuscado = listadoCadetes.FirstOrDefault(c => c.Id == idCadete);
 
-        float totalGanado = 0;
-        foreach (Cadete cadete in ListadoCadetes)
+        if (cadeteBuscado != null)
         {
-            var pedidosEntregados = ListadoPedidos.Where(pedido => pedido.Estado == PedidoEstado.Entregado);
-            int pedidosCadete = pedidosEntregados.Count(ped => ped.Cadete.Id == cadete.Id);
-            totalGanado += JornalACobrar(cadete.Id);
-
-            Console.WriteLine($"Cadete: {cadete.Nombre}");
-            Console.WriteLine($"- Pedidos Entregados: {pedidosCadete}");
-            Console.WriteLine($"- Monto ganado: ${JornalACobrar(cadete.Id)}");
-            Console.WriteLine("---------------------------------------------");
+            return cadeteBuscado;
+        } else
+        {
+            return null;
         }
+    }
 
-        Console.WriteLine($"Total Ganado: ${totalGanado}");
-    }*/
+    public bool AgregarCadete(Cadete cadeteNuevo)
+    {
+        ListadoCadetes.Add(cadeteNuevo);
+        cadeteNuevo.Id = ListadoCadetes.Count();
+        accesoCadetes.Guardar(ListadoCadetes);
+
+        if (ListadoCadetes.FirstOrDefault(c => c.Id == cadeteNuevo.Id) != null)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
 
 }
