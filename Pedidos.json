@@ -1,0 +1,50 @@
+[
+    {
+        "Nro": 1,
+        "Observacion": "con papas extras",
+        "Cliente": {
+            "Nombre": "Natalia",
+            "Direccion": "Av. Belgrano",
+            "Telefono": "38144444",
+            "DatosReferenciaDireccion": "casa esquina"
+        },
+        "Estado": 1,
+        "IdCadete": 2
+    },
+    {
+        "Nro": 2,
+        "Observacion": "sin condimentos",
+        "Cliente": {
+            "Nombre": "Martina",
+            "Direccion": "San Juan 400",
+            "Telefono": "8599327",
+            "DatosReferenciaDireccion": "ninguno"
+        },
+        "Estado": 0,
+        "IdCadete": 2
+    },
+    {
+        "Nro": 3,
+        "Observacion": "sin picante",
+        "Cliente": {
+            "Nombre": "Carlos",
+            "Direccion": "25 de mayo 120",
+            "Telefono": "8945794",
+            "DatosReferenciaDireccion": "ninguno"
+        },
+        "Estado": 0,
+        "IdCadete": 3
+    },
+    {
+        "Nro": 4,
+        "Observacion": "Sin observaciones",
+        "Cliente": {
+            "Nombre": "Nicolas",
+            "Direccion": "Buenos Aires 466",
+            "Telefono": "9453454",
+            "DatosReferenciaDireccion": "porton negro"
+        },
+        "Estado": 0,
+        "IdCadete": 4
+    }
+]

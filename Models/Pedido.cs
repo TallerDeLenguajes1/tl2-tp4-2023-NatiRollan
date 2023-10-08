@@ -30,6 +30,7 @@ public class Pedido
     {
 
     }
+    
     public Pedido (int nro, string obs, string nombre, string direccion, string telefono, string datosReferenciaDireccion)
     {
         Nro = nro;

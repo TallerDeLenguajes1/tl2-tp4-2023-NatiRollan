@@ -10,6 +10,7 @@ public class Cadeteria
     private List<Cadete> listadoCadetes;
     private List<Pedido> listadoPedidos;
     private static Cadeteria instance;
+    private AccesoADatosPedidos accesoPedidos = new AccesoADatosPedidos();
 
     //Propiedades
     public string? Nombre { get => nombre; set => nombre = value; }
@@ -22,15 +23,16 @@ public class Cadeteria
     {
         if (instance == null)
         {
-            AccesoJSON helpJson = new AccesoJSON();
-            instance = helpJson.LeerArchivoCadeteria("Cadeteria.json");
-            instance.ListadoCadetes = helpJson.LeerArchivoCadete("Cadetes.json");
+            AccesoADatosCadeteria helpCadeteria = new AccesoADatosCadeteria();
+            instance = helpCadeteria.Obtener();
+            AccesoADatosCadetes helpCadetes = new AccesoADatosCadetes();
+            instance.ListadoCadetes = helpCadetes.Obtener();
         }
 
         return instance;
     }
 
-    //Constructor
+    //Constructores
     public Cadeteria()
     {
         listadoCadetes = new List<Cadete>();
@@ -48,7 +50,7 @@ public class Cadeteria
     //Metodos
     public List<Pedido> GetPedidos()
     {
-        return ListadoPedidos;
+        return accesoPedidos.Obtener();
     }
 
     public List<Cadete> GetCadetes()
@@ -65,6 +67,8 @@ public class Cadeteria
     public bool AgregarPedido(Pedido pedidoNuevo)
     {
         ListadoPedidos.Add(pedidoNuevo);
+        pedidoNuevo.Nro = ListadoPedidos.Count();
+        accesoPedidos.Guardar(ListadoPedidos);
 
         if (ListadoPedidos.FirstOrDefault(p => p.Nro == pedidoNuevo.Nro) != null)
         {
@@ -76,20 +80,6 @@ public class Cadeteria
         }
     }
 
-    /*public bool DarAltaPedido(int nro, string obs, string nombre, string direccion, string telefono, string datosReferenciaDireccion)
-    {
-        Pedido pedidoNuevo = new Pedido(nro, obs, nombre, direccion, telefono, datosReferenciaDireccion);
-        bool control = AgregarPedido(pedidoNuevo);
-        if (control)
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-    }*/
-
     public bool AsignarCadeteAPedido(int nroPedido, int idCadete)
     {
         if (ListadoCadetes != null)
@@ -99,6 +89,7 @@ public class Cadeteria
             if (cadEncontrado != null && pedEncontrado != null)
             {
                 pedEncontrado.IdCadete = cadEncontrado.Id;
+                accesoPedidos.Guardar(ListadoPedidos);
                 return true;
             } else
             {
@@ -118,11 +109,13 @@ public class Cadeteria
             if (estado == 1)
             {
                 pedido.Estado = PedidoEstado.Entregado;
+                accesoPedidos.Guardar(ListadoPedidos);
                 return true;
             }
             else
             {
                 pedido.Estado = PedidoEstado.Cancelado;
+                accesoPedidos.Guardar(ListadoPedidos);
                 return true;
             }         
         } else
@@ -136,12 +129,14 @@ public class Cadeteria
         Cadete? cadEncontrado = ListadoCadetes.FirstOrDefault(cadete => cadete.Id == idC);
         if (cadEncontrado != null)
         {
+            ListadoPedidos = accesoPedidos.Obtener();
             Pedido? pedidoE = ListadoPedidos.FirstOrDefault(ped => ped.Nro == nroPedido);
             if (pedidoE.IdCadete != -9999)  //verifico si el pedido ya tiene asignado un cadete
             {
                 pedidoE.IdCadete = -9999;
             }
             pedidoE.IdCadete = cadEncontrado.Id;  // asigno el nuevo cadete al pedido
+            accesoPedidos.Guardar(ListadoPedidos);
             return true;
         } else
         {
